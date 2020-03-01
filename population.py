@@ -7,20 +7,26 @@ class Population():
         self.objects = objects
         self.MAX_WEIGHT = MAX_WEIGHT
         self.genes = []
-        self.matingPool = []
+        self.mating_pool = []
         self.generations = 0
-        self.bestFitness = -9999999
+        self.best_fitness = 0
         self.best = None
         self.max_pop = 30
         self.mutation_rate = 0.01
         self.values_sum = 0
+
         self.c_values_sum()
-        self.generateGenes()
+        self.generate_genes()
         self.c_fitness()
 
-    def generateGenes(self):
+    def generate_genes(self):
         for i in range(self.max_pop):
-            self.genes.append(DNA(self.objects, self.MAX_WEIGHT,self.values_sum,self.mutation_rate))
+            self.genes.append(DNA(
+                self.objects,
+                self.MAX_WEIGHT,
+                self.values_sum,
+                self.mutation_rate
+            ))
 
     def c_values_sum(self):
         for o in self.objects:
@@ -30,21 +36,21 @@ class Population():
         for dna in self.genes:
             dna.c_fitness()
 
-    def naturalSelection(self):
-        self.matingPool = []
+    def natural_selection(self):
+        self.mating_pool = []
         for dna in self.genes:
             for i in range(int(dna.fitness * 100)):
-                self.matingPool.append(dna)
+                self.mating_pool.append(dna)
 
-    def newGeneration(self):
+    def new_generation(self):
         self.genes = []
-        for i in range(0,len(self.matingPool)):
+        for i in range(0,len(self.mating_pool)):
             if i == self.max_pop:
                 break
-            a = random.randint(0, len(self.matingPool)-1)
-            b = random.randint(0, len(self.matingPool)-1)
-            parent1 = self.matingPool[a]
-            parent2 = self.matingPool[b]
+            a = random.randint(0, len(self.mating_pool)-1)
+            b = random.randint(0, len(self.mating_pool)-1)
+            parent1 = self.mating_pool[a]
+            parent2 = self.mating_pool[b]
             child = parent1.crossover(parent2)
             child.mutate()
             self.genes.append(child)
@@ -52,6 +58,6 @@ class Population():
 
     def evaluate(self):
         for dna in self.genes:
-            if dna.fitness > self.bestFitness:
+            if dna.fitness > self.best_fitness:
                 self.best = dna
-                self.bestFitness = dna.fitness
+                self.best_fitness = dna.fitness
